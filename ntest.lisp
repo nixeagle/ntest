@@ -36,3 +36,30 @@ CASES are the actual forms to test."
   (declare (unit-test unit-test))
   (pushnew case (unit-test-cases unit-test)))
 
+(deftype valid-test-status ()
+  "Tests have 5 possible status values.
+
+Tests are set at never-run at initialization, then when run they get set
+  to one of pass failure or unexpected-failure. When a test is re-run
+  before running the batch of tests, they are all cleared."
+  '(member :never-run :cleared :pass :failure :unexpected-failure))
+
+(defstruct (test-case
+             (:constructor
+              make-test-case
+              (expression-form expected-form &optional result-predicate
+                               &aux
+                               (expression-function
+                                (compile nil `(lambda () ,expression-form)))
+                               (expected-function
+                                (compile nil `(lambda () ,expected-form))))))
+  (result-predicate (function eql) :type function)
+  expression-form
+  (expression-function nil :type (or null function))
+  expression-result
+
+  expected-form
+  (expected-function nil :type (or null function))
+  expected-result                       ; Expect what?
+  (backtrace nil :type (or null string))
+  (status nil :type (or null valid-test-status)))
