@@ -61,5 +61,20 @@ Tests are set at never-run at initialization, then when run they get set
   expected-form
   (expected-function nil :type (or null function))
   expected-result                       ; Expect what?
-  (backtrace nil :type (or null string))
   (status nil :type (or null valid-test-status)))
+
+(defun run-test-case-expression (test-case-function)
+  (declare (function test-case-function))
+  (handler-case (funcall test-case-function)
+    (error (condition) condition)))
+
+(defun run-test-case (test-case)
+  "Run a testcase, not paying attention to dependencies."
+  (declare (test-case test-case))
+  (setf (test-case-expression-result test-case)
+        (run-test-case-expression (test-case-expression-function test-case)))
+  (setf (test-case-expected-result test-case)
+        (run-test-case-expression (test-case-expected-function test-case)))
+  test-case)
+
+;;; END
