@@ -53,7 +53,7 @@ Tests are set at never-run at initialization, then when run they get set
                                 (compile nil `(lambda () ,expression-form)))
                                (expected-function
                                 (compile nil `(lambda () ,expected-form))))))
-  (result-predicate (function eql) :type function)
+  (result-predicate *result-equality-test* :type function)
   expression-form
   (expression-function nil :type (or null function))
   expression-result
