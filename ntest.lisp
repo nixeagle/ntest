@@ -91,9 +91,9 @@ the test is itself a condition."
 (defun run-test-case-result-predicate (test-case)
   "Compares TEST-CASE's results with the test's defined predicate."
   (declare (test-case test-case))
-  (funcall (test-case-result-predicate test-case)
-           (test-case-expression-result test-case)
-           (test-case-expected-result test-case)))
+  (not (not (funcall (test-case-result-predicate test-case)
+                 (test-case-expression-result test-case)
+                 (test-case-expected-result test-case)))))
 
 (defun test-case-passed-p (test-case)
   "True if the TEST-CASE passed."
